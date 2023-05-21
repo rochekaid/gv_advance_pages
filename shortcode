@@ -2,8 +2,8 @@
 add_shortcode( 'gv_page_advance', 'gravity_page_advance' );
 function gravity_page_advance($atts = array()) {
     $details = shortcode_atts( array(
-        'view_id' => '19686',
-        'entry_id'=>'10024690'
+        'view_id' => '',
+        'entry_id'=>''
     ), $atts );
     if(get_post($details['view_id']) && get_post_type($details['view_id']) === 'gravityview') {
         $view_temp_settings=get_post_meta($details['view_id'], '_gravityview_template_settings', true) ;

@@ -1,4 +1,5 @@
 //gravityview page advance
+//use the following shortcode in a single view custom block, [gv_page_advance view_id="{embed_post:ID}" entry_id="{entry_id}"]
 add_shortcode( 'gv_page_advance', 'gravity_page_advance' );
 function gravity_page_advance($atts = array()) {
     $details = shortcode_atts( array(

@@ -2,8 +2,8 @@
 add_shortcode( 'gv_page_advance', 'gravity_page_advance' );
 function gravity_page_advance($atts = array()) {
     $details = shortcode_atts( array(
-        'view_id' => '',
-        'entry_id'=>''
+        'view_id' => '19686',
+        'entry_id'=>'10024690'
     ), $atts );
     if(get_post($details['view_id']) && get_post_type($details['view_id']) === 'gravityview') {
         $view_temp_settings=get_post_meta($details['view_id'], '_gravityview_template_settings', true) ;
@@ -26,20 +26,22 @@ function gravity_page_advance($atts = array()) {
         for($i=0;$i<$conditions_count;$i++){
             $conditions_count2=count($view_filters['conditions'][$i]['conditions']);
             for($x=0;$x<$conditions_count2;$x++){
-                if($view_filters['conditions'][$x]['mode']=='and'){
-                    $condition_mode2[$i][$x]="all";
-                }elseif($view_filters['conditions'][$x]['mode']=='or'){
-                     $condition_mode2[$i][$x]="any";
+                if(!empty($view_filters['conditions'][$i]['conditions'][$x]['key']) ){
+                    if($view_filters['conditions'][$x]['mode']=='and'){
+                        $condition_mode2[$i][$x]="all";
+                    }elseif($view_filters['conditions'][$x]['mode']=='or'){
+                         $condition_mode2[$i][$x]="any";
+                    }
+                    $search_criteria['field_filters']['mode']=$condition_mode2[$i][$x];
+                    $form = GFAPI::get_form($form_id);
+                    $field = GFFormsModel::get_field($form, $view_filters['conditions'][$i]['conditions'][$x]['key']);
+                    if ($field['type'] == 'date') {
+                        $value=date('Y-m-d', strtotime($view_filters['conditions'][$i]['conditions'][$x]['value']));
+                    }else{
+                        $value=$view_filters['conditions'][$i]['conditions'][$x]['value'];
+                    }
+                    $search_criteria['field_filters'][$x]=array('key'=>$view_filters['conditions'][$i]['conditions'][$x]['key'],"operator"=>$view_filters['conditions'][$i]['conditions'][$x]['operator'],"value"=>$value);
                 }
-                $search_criteria['field_filters']['mode']=$condition_mode2[$i][$x];
-                $form = GFAPI::get_form($form_id);
-                $field = GFFormsModel::get_field($form, $view_filters['conditions'][$i]['conditions'][$x]['key']);
-                if ($field['type'] == 'date') {
-                    $value=date('Y-m-d', strtotime($view_filters['conditions'][$i]['conditions'][$x]['value']));
-                }else{
-                    $value=$view_filters['conditions'][$i]['conditions'][$x]['value'];
-                }
-                $search_criteria['field_filters'][$x]=array('key'=>$view_filters['conditions'][$i]['conditions'][$x]['key'],"operator"=>$view_filters['conditions'][$i]['conditions'][$x]['operator'],"value"=>$value);
             }
         }
         $sort_field_1 = $view_temp_settings['sort_field'][0]; 
@@ -87,4 +89,4 @@ function gravity_page_advance($atts = array()) {
             }
         }
     }
-} 
+}
